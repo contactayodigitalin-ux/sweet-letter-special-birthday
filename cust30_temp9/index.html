@@ -621,29 +621,25 @@
       function go(n) {
         document.querySelector(".page.active")?.classList.remove("active");
         document.getElementById("page" + n).classList.add("active");
-
-        // Musik langsung di-play ketika berpindah ke page 2 (setelah countdown selesai)
-        if (n === 2) {
-          bgm.play().catch((err) => {
-            console.log(
-              "Autoplay dicegah browser, musik akan menyala saat layar disentuh.",
-              err,
-            );
-          });
-        }
       }
 
       /* ===== LILIN ===== */
       function blowCandle() {
         if (isBlown) return;
+
         isBlown = true;
+
+        bgm.play().catch(err => console.log(err));
+
         document.getElementById("candleWrapper").classList.add("blown");
+
         confetti({
           particleCount: 90,
           spread: 65,
           origin: { y: 0.6 },
           colors: ["#c5cae9", "#b39ddb", "#e1bee7", "#d1c4e9", "#ffffff"],
         });
+
         setTimeout(() => {
           go(3);
         }, 1300);
