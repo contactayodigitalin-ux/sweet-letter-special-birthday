@@ -348,7 +348,7 @@
 
       .cowok-frame {
         width: 100%;
-        height: 330px;
+        height: 260px;
         border-radius: 14px;
         overflow: hidden;
         border: 2px solid rgba(179, 157, 219, 0.4);
@@ -368,13 +368,36 @@
       .cowok-frame video {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+      }
+
+      .photo-caption {
+        margin-top: 12px;
+        font-size: 1.05rem;
+        color: #b39ddb;
+        font-weight: 600;
+        font-style: italic;
+        text-align: center;
+        text-shadow: 0 2px 8px rgba(179,157,219,.25);
+      }
+
+      .birthday-title {
+        margin-bottom: 10px;
+        color: #7e57c2;
+        font-size: 1.6rem;
+        font-weight: 600;
+        animation: bounce 1.5s infinite;
+      }
+
+      @keyframes bounce {
+        0%,100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
       }
     </style>
   </head>
   <body>
     <div class="floaties" id="floaties"></div>
-    <audio id="bgm" src="hbd.mp3" loop></audio>
+    <audio id="bgm" src="lagu.mp3" loop></audio>
 
     <div class="page active" id="page1">
       <div class="countdown-wrap">
@@ -462,11 +485,15 @@
 
     <div class="page" id="page3">
       <div class="main-card" style="justify-content: flex-start">
-        <div class="sub-page active" id="subPage1">
-          <div class="cowok-frame">
-            <img src="foto1.jpeg" alt="Foto 1" />
-          </div>
+      <div class="sub-page active" id="subPage1">
+        <div class="cowok-frame">
+          <img src="foto1.jpeg" alt="Foto 1" />
         </div>
+
+        <p class="photo-caption">
+          to my favorite person in the world 💙
+        </p>
+      </div>
 
         <div class="sub-page" id="subPage2">
           <div class="scroll-combine-container" id="scrollBox">
@@ -475,6 +502,11 @@
         </div>
 
         <div class="sub-page" id="subPage3">
+
+          <h2 class="birthday-title">
+            YEAY 16! 🎉💙
+          </h2>
+
           <div class="cowok-frame">
             <video
               width="100%"
@@ -482,7 +514,7 @@
               controls
               playsinline
             >
-              <source src="vidio2.mp4" type="video/mp4">
+            <source src="vidio2.mp4" type="video/mp4">
               Browser tidak mendukung video.
             </video>
           </div>
