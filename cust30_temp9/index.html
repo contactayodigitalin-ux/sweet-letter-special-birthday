@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Happy Birthday Frikaa💙</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #fdf8f9;
+        --card-white: #ffffff;
+        --blue-mid: #b39ddb;
+        --blue-dark: #7e57c2;
+        --blue-light: #e1bee7;
+        --text-dark: #3c3f58;
+        --text-mid: #686b87;
+        --text-soft: #a2a5c3;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        font-family: "Fredoka", sans-serif;
+        color: var(--text-dark);
+      }
+
+      /* FLOATIES */
+      .floaties {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+      .floaty {
+        position: absolute;
+        top: -60px;
+        animation: floatDown linear forwards;
+        font-size: var(--fs, 18px);
+        opacity: 0.5;
+      }
+      @keyframes floatDown {
+        to {
+          transform: translateY(110vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      /* PAGE SYSTEM */
+      .page {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1.5rem;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.5s ease,
+          transform 0.5s ease;
+        transform: translateY(12px);
+      }
+      .page.active {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+
+      /* MAIN CARD */
+      .main-card {
+        background: var(--card-white);
+        border-radius: 20px;
+        box-shadow:
+          0 8px 32px rgba(179, 157, 219, 0.15),
+          0 2px 8px rgba(179, 157, 219, 0.08);
+        width: 100%;
+        max-width: 360px;
+        height: 480px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 1.5px solid rgba(179, 157, 219, 0.3);
+      }
+      .page-indicator {
+        margin-top: auto;
+        font-size: 0.82rem;
+        color: var(--text-soft);
+        padding-top: 0.5rem;
+      }
+      .nav-container {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-top: 0.5rem;
+      }
+      .nav-circle-btn {
+        background: var(--blue-mid);
+        color: white;
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        font-size: 1.3rem;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(179, 157, 219, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      .nav-circle-btn:active {
+        transform: scale(0.88);
+        box-shadow: 0 2px 6px rgba(179, 157, 219, 0.2);
+      }
+
+      /* =====================
+   PAGE 1 — COUNTDOWN SPLASH
+   ===================== */
+      #page1 {
+        background: var(--bg);
+      }
+
+      .countdown-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.2rem;
+      }
+
+      .countdown-number {
+        font-size: 7rem;
+        font-weight: 600;
+        color: var(--blue-dark);
+        line-height: 1;
+        opacity: 0;
+        transform: scale(0.4);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+        text-shadow: 0 4px 24px rgba(126, 87, 194, 0.18);
+        user-select: none;
+      }
+      .countdown-number.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .countdown-number.hide {
+        opacity: 0;
+        transform: scale(1.6);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .countdown-label {
+        font-size: 1rem;
+        color: var(--text-soft);
+        letter-spacing: 1.5px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.2s;
+      }
+
+      .countdown-dots {
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease forwards 0.4s;
+      }
+      .countdown-dots span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--blue-mid);
+        animation: dotPulse 1s ease-in-out infinite;
+      }
+      .countdown-dots span:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .countdown-dots span:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes dotPulse {
+        0%,
+        100% {
+          transform: scale(0.7);
+          opacity: 0.3;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 1;
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Ripple burst on countdown change */
+      .ripple-burst {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(179, 157, 219, 0.35);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        pointer-events: none;
+        z-index: 5;
+        animation: ripplePop 0.5s ease-out forwards;
+      }
+      @keyframes ripplePop {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0.7;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(30);
+          opacity: 0;
+        }
+      }
+
+      /* =====================
+   PAGE 2 — LILIN KUE
+   ===================== */
+      @keyframes flicker {
+        0%,
+        100% {
+          transform: scale(1) translateX(0);
+          filter: drop-shadow(0 0 6px #ffaa00);
+        }
+        25% {
+          transform: scale(1.08) translateX(1px);
+        }
+        50% {
+          transform: scale(1.12) translateX(-1px);
+          filter: drop-shadow(0 0 14px #ffcc00);
+        }
+        75% {
+          transform: scale(1.05) translateX(1px);
+        }
+      }
+      .flame {
+        transform-origin: bottom center;
+        animation: flicker 0.45s ease-in-out infinite;
+      }
+      .blown .flame {
+        display: none !important;
+      }
+      .smoke-line {
+        stroke: rgba(80, 80, 80, 0.35);
+        stroke-dasharray: 30;
+        stroke-dashoffset: 30;
+        opacity: 0;
+      }
+      .blown .smoke-line {
+        animation: riseSmoke 1.2s ease-out forwards;
+      }
+      @keyframes riseSmoke {
+        0% {
+          stroke-dashoffset: 30;
+          opacity: 0.5;
+        }
+        100% {
+          stroke-dashoffset: 0;
+          opacity: 0;
+          transform: translateY(-18px);
+        }
+      }
+      .candle-area {
+        cursor: pointer;
+        display: inline-block;
+        transition: transform 0.1s;
+      }
+      .candle-area:active {
+        transform: scale(0.95);
+      }
+
+      /* =====================
+   PAGE 3 — GALLERY & UCAPAN
+   ===================== */
+      .sub-page {
+        display: none;
+        width: 100%;
+        height: 350px;
+        flex-direction: column;
+        align-items: center;
+      }
+      .sub-page.active {
+        display: flex;
+      }
+
+      .scroll-combine-container {
+        width: 100%;
+        height: 350px;
+        overflow-y: auto;
+        text-align: left;
+        padding-right: 6px;
+      }
+      .scroll-combine-container::-webkit-scrollbar {
+        width: 3px;
+      }
+      .scroll-combine-container::-webkit-scrollbar-thumb {
+        background: #b0c4de;
+        border-radius: 4px;
+      }
+
+      .wish-text {
+        font-family: "Fredoka", sans-serif;
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: var(--text-mid);
+        white-space: pre-line;
+        margin-top: 14px;
+        padding: 0 4px;
+      }
+
+      .cowok-frame {
+        width: 100%;
+        height: 330px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 2px solid rgba(179, 157, 219, 0.4);
+        flex-shrink: 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+      .cowok-frame.mini-size {
+        height: 200px;
+        margin-bottom: 4px;
+      }
+      .cowok-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .cowok-frame video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="floaties" id="floaties"></div>
+    <audio id="bgm" src="hbd.mp3" loop></audio>
+
+    <div class="page active" id="page1">
+      <div class="countdown-wrap">
+        <div class="countdown-number" id="cNum">3</div>
+        <p class="countdown-label">just a moment ✦</p>
+        <div class="countdown-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page2">
+      <div class="main-card">
+        <h2 style="margin-bottom: 0.8rem; font-size: 1.3rem; color: #e57373">
+          Make a Wish! 🎂
+        </h2>
+        <div class="candle-area" id="candleWrapper">
+          <svg
+            width="160"
+            height="165"
+            viewBox="0 0 160 165"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <ellipse cx="80" cy="128" rx="52" ry="10" fill="#e0e8f5" />
+            <rect
+              x="28"
+              y="85"
+              width="104"
+              height="40"
+              rx="10"
+              fill="#90caf9"
+            />
+            <rect x="28" y="85" width="104" height="12" rx="6" fill="#bbdefb" />
+            <circle cx="55" cy="91" r="4" fill="#ef9a9a" />
+            <circle cx="80" cy="91" r="4" fill="#a5d6a7" />
+            <circle cx="105" cy="91" r="4" fill="#ffe082" />
+            <rect x="74" y="56" width="12" height="30" rx="3" fill="#90caf9" />
+            <path
+              d="M74 65 L86 68 M74 74 L86 77"
+              stroke="#5b8ec4"
+              stroke-width="1.5"
+            />
+            <path
+              class="smoke-line"
+              d="M80 50 Q74 34 84 18"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <path
+              class="smoke-line"
+              d="M80 50 Q88 32 76 16"
+              stroke-width="1.5"
+              fill="none"
+              stroke-linecap="round"
+              style="animation-delay: 0.15s"
+            />
+            <g class="flame" id="candleFlame">
+              <path
+                d="M80 30 C75 40 75 52 80 54 C85 52 85 40 80 30 Z"
+                fill="#ffb300"
+              />
+              <path
+                d="M80 36 C78 43 78 50 80 51 C82 50 82 43 80 36 Z"
+                fill="#ff6d00"
+                opacity="0.85"
+              />
+              <ellipse
+                cx="80"
+                cy="51"
+                rx="4"
+                ry="2"
+                fill="#fff176"
+                opacity="0.7"
+              />
+            </g>
+          </svg>
+        </div>
+        <p style="font-size: 0.83rem; color: #8aabcc; margin-top: 0.8rem">
+          Tap apinya untuk meniup lilin! 🌬️
+        </p>
+      </div>
+    </div>
+
+    <div class="page" id="page3">
+      <div class="main-card" style="justify-content: flex-start">
+        <div class="sub-page active" id="subPage1">
+          <div class="cowok-frame">
+            <img src="foto1.jpeg" alt="Foto 1" />
+          </div>
+        </div>
+
+        <div class="sub-page" id="subPage2">
+          <div class="scroll-combine-container" id="scrollBox">
+            <p class="wish-text" id="typingText"></p>
+          </div>
+        </div>
+
+        <div class="sub-page" id="subPage3">
+          <div class="cowok-frame">
+            <video
+              width="100%"
+              height="100%"
+              controls
+              playsinline
+            >
+              <source src="vidio2.mp4" type="video/mp4">
+              Browser tidak mendukung video.
+            </video>
+          </div>
+        </div>
+
+        <div class="page-indicator" id="subIndicator">Page 1 of 3</div>
+
+        <div class="nav-container">
+          <button
+            class="nav-circle-btn"
+            id="prevBtn"
+            onclick="changeSubPage(-1)"
+          >
+            ‹
+          </button>
+          <button
+            class="nav-circle-btn"
+            id="nextBtn"
+            onclick="changeSubPage(1)"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ===== STATE ===== */
+      let isBlown = false;
+      let currentSubPage = 1;
+      const bgm = document.getElementById("bgm");
+
+      const wishTextContent = `HAPPY BIRTHDAY TO MY DEAREST BESTFRIEND! 💝💝💝💝
+
+      semoga di usia yang baru ini, kamu selalu dikelilingi oleh orang-orang yang tulus menyayangimu, diberi kekuatan untuk menghadapi setiap tantangan, dan menemukan banyak alasan untuk tersenyum setiap hari. jangan terlalu keras pada dirimu sendiri, karena kamu sudah melakukan yang terbaik dan kamu pantas mendapatkan hal-hal baik dalam hidup. semangat menjadi anak pertama untuk kedua adik-adikmu, semoga kau selalu  memberikan yang terbaik untuk adikmu, dan kedua orang tuamu! semangat berjuang untuk tahun 28, 2 tahun lagi perjalanan kita untuk masa depan kita, apapun impian kitaa bisa tercapai yaa di tahun keberuntungan itu bagi kita. DAN SEMOGA KITA DAPAT JURUSAN IMPIAN KITA YAAA! 
+
+      on your special day, i wish you endless happiness, good health, and all the success you deserve. may every dream you keep in your heart come true, one by one. 16 tahunmu ini, aku tidak hanya berharap kamu mendapatkan banyak kebahagiaan. aku juga berharap kamu menemukan ketenangan.i hope this year brings you peace, happiness, and people who love you the way you deserve to be loved.
+
+      i may not always say it directly, but i really appreciate all the attention, support, and kindness you've given me over the years. We've shared so many memories together. thank you for being a good listener to stories, i hope we can take good care of all our stories. sejauh ini, kita udah saling percaya untuk menyimpan rahasia, apalagi cerita kita kemarin, termasuk munafik sih..tapi lagian bestimu itu juga ngeselin sih 🥺🥺
+
+      terima kasih karena sudah menjadi bagian dari perjalanan di masa sekolahku, terima kasih untuk semua tawa yang pernah kita bagi, semua cerita yang pernah kita dengarkan satu sama lain, dan semua momen yang mungkin terlihat sederhana, tapi sebenarnya sangat berarti bagi kita. there are many people we meet in life, but only a few become part of our heart. you are one of them.
+
+      kalau suatu hari nanti hidup terasa berat, aku harap kamu selalu ingat bahwa kamu tidak harus menghadapi semuanya sendirian. akan ada orang-orang yang peduli padamu, Tuhan, orangtuamu, saudaramu, dan teman terdekatmu termasuk princes. princes akan mendoakan yang terbaik untukmu, bahkan di hari hari ketika kita  mungkin tidak sempat bicara sesering biasanya karna udah punya kesibukan masing masing nantinya. may your smile never fade, may your heart always be full, and may life be kinder to you with every passing year. ingat aja ya ayat ini ulangan 31:6! 
+
+      tetap berteman baik yaa sampai selamanya, kita bisa berteman sampai beneran jadi istri siio nantinyaa, don't be a stranger karna kurang komunikasi atau beda kelas nantinya, kita tetap menjadi kita yang akan selalu berbagi segala cerita di setiap sela hidup kita, u always my forever bestii <3! love u. ❤️❤️❤️❤️`;
+
+      /* ===== COUNTDOWN SPLASH ===== */
+      const cNum = document.getElementById("cNum");
+      let count = 3;
+
+      function spawnRipple() {
+        const r = document.createElement("div");
+        r.className = "ripple-burst";
+        document.body.appendChild(r);
+        setTimeout(() => r.remove(), 500);
+      }
+
+      function tickCount() {
+        cNum.classList.remove("show");
+        cNum.classList.add("hide");
+
+        setTimeout(() => {
+          count--;
+          if (count > 0) {
+            cNum.textContent = count;
+            cNum.classList.remove("hide");
+            void cNum.offsetWidth;
+            cNum.classList.add("show");
+            spawnRipple();
+            setTimeout(tickCount, 900);
+          } else {
+            // angka 0 / selesai — tembak confetti lalu masuk page lilin
+            spawnRipple();
+            confetti({
+              particleCount: 120,
+              spread: 80,
+              origin: { y: 0.5 },
+              colors: [
+                "#c5cae9",
+                "#b39ddb",
+                "#e1bee7",
+                "#d1c4e9",
+                "#ffffff",
+                "#7e57c2",
+              ],
+            });
+            setTimeout(() => {
+              go(2);
+            }, 700);
+          }
+        }, 260);
+      }
+
+      // Mulai countdown setelah semua elemen tampil
+      setTimeout(() => {
+        cNum.classList.add("show");
+        spawnRipple();
+        setTimeout(tickCount, 900);
+      }, 500);
+
+      /* ===== NAVIGASI HALAMAN UTAMA ===== */
+      function go(n) {
+        document.querySelector(".page.active")?.classList.remove("active");
+        document.getElementById("page" + n).classList.add("active");
+
+        // Musik langsung di-play ketika berpindah ke page 2 (setelah countdown selesai)
+        if (n === 2) {
+          bgm.play().catch((err) => {
+            console.log(
+              "Autoplay dicegah browser, musik akan menyala saat layar disentuh.",
+              err,
+            );
+          });
+        }
+      }
+
+      /* ===== LILIN ===== */
+      function blowCandle() {
+        if (isBlown) return;
+        isBlown = true;
+        document.getElementById("candleWrapper").classList.add("blown");
+        confetti({
+          particleCount: 90,
+          spread: 65,
+          origin: { y: 0.6 },
+          colors: ["#c5cae9", "#b39ddb", "#e1bee7", "#d1c4e9", "#ffffff"],
+        });
+        setTimeout(() => {
+          go(3);
+        }, 1300);
+      }
+      document
+        .getElementById("candleWrapper")
+        .addEventListener("click", blowCandle);
+
+      /* ===== SUB-PAGES ===== */
+      function changeSubPage(direction) {
+        if (currentSubPage === 1 && direction === -1) {
+          go(2);
+          isBlown = false;
+          document.getElementById("candleWrapper").classList.remove("blown");
+          return;
+        }
+        if (currentSubPage === 1 && direction === 1) {
+          setTimeout(typeMessage, 350);
+        }
+        if (currentSubPage === 3 && direction === 1) {
+          window.location.reload();
+          return;
+        }
+        document
+          .getElementById("subPage" + currentSubPage)
+          .classList.remove("active");
+        currentSubPage += direction;
+        document
+          .getElementById("subPage" + currentSubPage)
+          .classList.add("active");
+        document.getElementById("subIndicator").textContent =
+          `Page ${currentSubPage} of 3`;
+        document.getElementById("nextBtn").textContent =
+          currentSubPage === 3 ? "↩" : "›";
+      }
+
+      /* ===== TYPING EFFECT ===== */
+      function typeMessage() {
+        const el = document.getElementById("typingText");
+        const box = document.getElementById("scrollBox");
+        if (el.textContent !== "") return;
+        let i = 0;
+        function typing() {
+          if (i < wishTextContent.length) {
+            el.textContent += wishTextContent[i];
+            box.scrollTop = box.scrollHeight;
+            i++;
+            setTimeout(typing, 22);
+          } else {
+            confetti({
+              particleCount: 45,
+              spread: 45,
+              origin: { y: 0.7 },
+              colors: ["#b39ddb", "#7e57c2", "#e1bee7"],
+            });
+          }
+        }
+        typing();
+      }
+
+      /* ===== FLOATIES ===== */
+      const emojis = ["💙", "✨", "🌟", "🎈", "💫", "⭐", "🫧"];
+      function spawnFloat() {
+        const c = document.getElementById("floaties");
+        const el = document.createElement("div");
+        el.className = "floaty";
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.cssText = `left:${Math.random() * 100}vw;--fs:${Math.floor(Math.random() * 12 + 10)}px;animation-duration:${(Math.random() * 3 + 4).toFixed(1)}s`;
+        c.appendChild(el);
+        setTimeout(() => el.remove(), 7000);
+      }
+      setInterval(spawnFloat, 700);
+    </script>
+  </body>
+</html>
