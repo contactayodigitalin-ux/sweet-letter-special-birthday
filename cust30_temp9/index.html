@@ -397,7 +397,7 @@
   </head>
   <body>
     <div class="floaties" id="floaties"></div>
-    <audio id="bgm" src="lagu.mp3" loop></audio>
+    <audio id="bgm" src="song.mp3" loop></audio>
 
     <div class="page active" id="page1">
       <div class="countdown-wrap">
@@ -648,6 +648,32 @@
         .getElementById("candleWrapper")
         .addEventListener("click", blowCandle);
 
+      function fadeOutMusic() {
+  let fade = setInterval(() => {
+    if (bgm.volume > 0.05) {
+      bgm.volume -= 0.05;
+    } else {
+      clearInterval(fade);
+      bgm.pause();
+      bgm.volume = 1;
+    }
+  }, 100);
+}
+
+function fadeInMusic() {
+  bgm.volume = 0;
+  bgm.play().catch(() => {});
+
+  let fade = setInterval(() => {
+    if (bgm.volume < 0.95) {
+      bgm.volume += 0.05;
+    } else {
+      bgm.volume = 1;
+      clearInterval(fade);
+    }
+  }, 100);
+}
+
       /* ===== SUB-PAGES ===== */
       function changeSubPage(direction) {
         if (currentSubPage === 1 && direction === -1) {
@@ -670,6 +696,13 @@
         document
           .getElementById("subPage" + currentSubPage)
           .classList.add("active");
+          if (currentSubPage === 3) {
+          fadeOutMusic();
+        } else {
+          if (bgm.paused) {
+            fadeInMusic();
+          }
+        }
         document.getElementById("subIndicator").textContent =
           `Page ${currentSubPage} of 3`;
         document.getElementById("nextBtn").textContent =
